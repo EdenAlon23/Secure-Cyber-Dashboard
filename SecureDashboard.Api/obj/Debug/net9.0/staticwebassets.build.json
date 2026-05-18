@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "5tn7A2FtrNYqO2kto5YTqZN4AEMGtMPragRQkopKvIQ=",
+  "Source": "SecureDashboard.Api",
+  "BasePath": "_content/SecureDashboard.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
