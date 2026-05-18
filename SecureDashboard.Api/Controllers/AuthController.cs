@@ -4,6 +4,11 @@ using SecureDashboard.Api.Data;
 using SecureDashboard.Api.DTOs;
 using SecureDashboard.Api.Models;
 using BCrypt.Net;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.RateLimiting; 
 
 namespace SecureDashboard.Api.Controllers
 {
@@ -12,39 +17,96 @@ namespace SecureDashboard.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
+        private readonly IConfiguration _configuration; // Added for JWT config
 
-        public AuthController(AppDbContext context)
+        public AuthController(AppDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
-            // Security Best Practice: Check if the user already exists to prevent duplicate accounts.
             var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
             if (existingUser != null)
             {
-                // We return a generic message to prevent "Account Enumeration" attacks.
-                // We don't want attackers to know which emails exist in our system.
                 return BadRequest(new { Message = "Registration failed. Please check your details." });
             }
 
-            // Security Best Practice: Hash the password using BCrypt.
-            // The library automatically generates a strong cryptographic salt.
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             var newUser = new User
             {
                 Email = dto.Email,
                 PasswordHash = hashedPassword,
-                Role = "User" // Default role
+                Role = "User"
             };
 
             _context.Users.Add(newUser);
             await _context.SaveChangesAsync();
 
             return Ok(new { Message = "User registered successfully." });
+        }
+
+        [HttpPost("login")]
+        [EnableRateLimiting("LoginPolicy")] // Protection against brute-force attacks!
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            {
+                return Unauthorized(new { Message = "Invalid email or password." });
+            }
+
+            var token = GenerateJwtToken(user);
+            return Ok(new { Token = token, Message = "Login successful." });
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            // 1. Find the user by email
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+
+            // Security Best Practice: Use a generic error message for both wrong email and wrong password
+            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
+            {
+                return Unauthorized(new { Message = "Invalid email or password." });
+            }
+
+            // 2. If we reach here, the password is correct! Let's generate the JWT.
+            var token = GenerateJwtToken(user);
+
+            return Ok(new { Token = token, Message = "Login successful." });
+        }
+
+        // Helper method to generate the JWT
+        private string GenerateJwtToken(User user)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            // Claims are pieces of info embedded in the token (like their ID and Role)
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role), // Crucial for RBAC (Admin/User)
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var token = new JwtSecurityToken(
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpiryMinutes"])),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

@@ -123,3 +123,9 @@ c:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Ap
 c:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\obj\Debug\net9.0\SecureDashboard.Api.pdb
 c:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\obj\Debug\net9.0\SecureDashboard.Api.genruntimeconfig.cache
 c:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\obj\Debug\net9.0\ref\SecureDashboard.Api.dll
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\obj\Debug\net9.0\SecureDashboard.Api.sourcelink.json
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Abstractions.dll
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\bin\Debug\net9.0\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Logging.dll
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\bin\Debug\net9.0\Microsoft.IdentityModel.Tokens.dll
+C:\Users\edena\OneDrive\פיתוחים\Secure-Cyber-Dashboard\SecureDashboard.Api\bin\Debug\net9.0\System.IdentityModel.Tokens.Jwt.dll
