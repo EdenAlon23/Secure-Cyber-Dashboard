@@ -2,7 +2,7 @@
 # STAGE 1: Build & Publish
 # ==========================================
 # We use the heavy SDK image only for compiling the code.
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
 # Copy the project file and restore NuGet packages
@@ -18,7 +18,7 @@ RUN dotnet publish "SecureDashboard.Api.csproj" -c Release -o /app/publish /p:Us
 # ==========================================
 # We use the much smaller ASP.NET runtime image for production. 
 # This reduces the attack surface and image size significantly.
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # Render.com expects web services to listen on a specific port. 8080 is standard.
