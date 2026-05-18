@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SecureDashboard.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b36c526f072de2844f0283fef72f378ac8e0317b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+20e214bf82f0ad1557d4786d09ec86318f8f99ad")]
 [assembly: System.Reflection.AssemblyProductAttribute("SecureDashboard.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SecureDashboard.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
