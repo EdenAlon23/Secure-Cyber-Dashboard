@@ -47,6 +47,17 @@ builder.Services.AddRateLimiter(options =>
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 
+// Configure CORS to allow our React app to communicate with the API
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // The React Vite port
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -56,6 +67,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Apply CORS Policy
+app.UseCors("AllowReactApp");
 
 // Use our custom Security Threat Logging Middleware BEFORE Authentication
 app.UseMiddleware<SecurityLoggingMiddleware>();

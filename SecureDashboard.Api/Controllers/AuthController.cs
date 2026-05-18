@@ -8,7 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.AspNetCore.RateLimiting; 
+using Microsoft.AspNetCore.RateLimiting; // Added for Rate Limiting
 
 namespace SecureDashboard.Api.Controllers
 {
@@ -17,7 +17,7 @@ namespace SecureDashboard.Api.Controllers
     public class AuthController : ControllerBase
     {
         private readonly AppDbContext _context;
-        private readonly IConfiguration _configuration; // Added for JWT config
+        private readonly IConfiguration _configuration;
 
         public AuthController(AppDbContext context, IConfiguration configuration)
         {
@@ -64,37 +64,17 @@ namespace SecureDashboard.Api.Controllers
             return Ok(new { Token = token, Message = "Login successful." });
         }
 
-        [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] LoginDto dto)
-        {
-            // 1. Find the user by email
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
-
-            // Security Best Practice: Use a generic error message for both wrong email and wrong password
-            if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            {
-                return Unauthorized(new { Message = "Invalid email or password." });
-            }
-
-            // 2. If we reach here, the password is correct! Let's generate the JWT.
-            var token = GenerateJwtToken(user);
-
-            return Ok(new { Token = token, Message = "Login successful." });
-        }
-
-        // Helper method to generate the JWT
         private string GenerateJwtToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            // Claims are pieces of info embedded in the token (like their ID and Role)
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role), // Crucial for RBAC (Admin/User)
+                new Claim(ClaimTypes.Role, user.Role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

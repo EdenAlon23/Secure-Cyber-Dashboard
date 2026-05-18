@@ -31,7 +31,7 @@ namespace SecureDashboard.Api.Middlewares
                 string path = context.Request.Path;
 
                 // We only care about logging attacks on our authentication endpoints
-                if (path.StartsWithSegments("/api/auth"))
+                if (path.StartsWith("/api/auth"))
                 {
                     using (var scope = _scopeFactory.CreateScope())
                     {
