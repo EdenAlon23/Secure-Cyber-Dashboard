@@ -18,7 +18,7 @@ RUN dotnet publish "SecureDashboard.Api.csproj" -c Release -o /app/publish /p:Us
 # ==========================================
 # We use the much smaller ASP.NET runtime image for production. 
 # This reduces the attack surface and image size significantly.
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 
 # Render.com expects web services to listen on a specific port. 8080 is standard.
