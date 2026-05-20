@@ -52,7 +52,8 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // The React Vite port
+            // Added the Vercel address here (important: without trailing slash!)
+        policy.WithOrigins("http://localhost:5173", "https://secure-cyber-dashboard.vercel.app")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
