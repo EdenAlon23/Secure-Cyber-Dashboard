@@ -1,6 +1,7 @@
-import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
-import { Dashboard } from './pages/Dashboard.tsx';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
+import { Register } from './pages/Register'; 
 
 function App() {
   return (
@@ -9,6 +10,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} /> 
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </div>

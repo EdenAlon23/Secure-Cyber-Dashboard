@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5041/api'; 
+// INTERVIEW TALKING POINT: 
+// Using environment variables allows the app to dynamically switch between 
+// the local C# server during development and the Render.com cloud server in production.
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5041/api';
 
 export const axiosClient = axios.create({
     baseURL: API_URL,
@@ -9,8 +12,6 @@ export const axiosClient = axios.create({
     },
 });
 
-// INTERVIEW TALKING POINT:
-// Interceptors automatically attach our JWT to every request we send to the server.
 axiosClient.interceptors.request.use((config) => {
     const token = localStorage.getItem('jwt_token');
     if (token) {
